@@ -1,12 +1,14 @@
 package com.tlkm.broadcast5g.model;
 
+
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
-public abstract class SMS {
+@Entity
+public class SMSOffering {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -221,6 +223,4 @@ public abstract class SMS {
     public void setReplyDate(Date replyDate) {
         this.replyDate = replyDate;
     }
-
-
 }

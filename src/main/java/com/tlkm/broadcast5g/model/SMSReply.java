@@ -1,12 +1,12 @@
 package com.tlkm.broadcast5g.model;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
-public abstract class SMS {
+@Entity
+public class SMSReply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,12 +38,6 @@ public abstract class SMS {
     private String providerName;
 
     @Column
-    private String pin;
-
-    @Column
-    private String userId;
-
-    @Column
     private int smsCount;
 
     @Column
@@ -55,35 +49,29 @@ public abstract class SMS {
     @Column
     private String trxId;
 
-    @Column
-    @ColumnDefault("0")
-    private int replyStatus;
 
+    public Long getId() {
+        return id;
+    }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date replyDate;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    @Override
-    public String toString() {
-        return "SMSOffering{" +
-                "id=" + id +
-                ", msisdn='" + msisdn + '\'' +
-                ", content='" + content + '\'' +
-                ", senderID='" + senderID + '\'' +
-                ", responseID='" + responseID + '\'' +
-                ", responseDesc='" + responseDesc + '\'' +
-                ", sentDate=" + sentDate +
-                ", optName='" + optName + '\'' +
-                ", providerName='" + providerName + '\'' +
-                ", pin='" + pin + '\'' +
-                ", userId='" + userId + '\'' +
-                ", smsCount=" + smsCount +
-                ", statusId=" + statusId +
-                ", statusDesc='" + statusDesc + '\'' +
-                ", trxId='" + trxId + '\'' +
-                ", replyStatus=" + replyStatus +
-                ", replyDate=" + replyDate +
-                '}';
+    public String getMsisdn() {
+        return msisdn;
+    }
+
+    public void setMsisdn(String msisdn) {
+        this.msisdn = msisdn;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getSenderID() {
@@ -110,30 +98,6 @@ public abstract class SMS {
         this.responseDesc = responseDesc;
     }
 
-    public String getMsisdn() {
-        return msisdn;
-    }
-
-    public void setMsisdn(String msisdn) {
-        this.msisdn = msisdn;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Date getSentDate() {
         return sentDate;
     }
@@ -156,22 +120,6 @@ public abstract class SMS {
 
     public void setProviderName(String providerName) {
         this.providerName = providerName;
-    }
-
-    public String getPin() {
-        return pin;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public int getSmsCount() {
@@ -205,22 +153,4 @@ public abstract class SMS {
     public void setTrxId(String trxId) {
         this.trxId = trxId;
     }
-
-    public int getReplyStatus() {
-        return replyStatus;
-    }
-
-    public void setReplyStatus(int replyStatus) {
-        this.replyStatus = replyStatus;
-    }
-
-    public Date getReplyDate() {
-        return replyDate;
-    }
-
-    public void setReplyDate(Date replyDate) {
-        this.replyDate = replyDate;
-    }
-
-
 }
