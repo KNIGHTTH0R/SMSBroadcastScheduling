@@ -1,5 +1,7 @@
 package com.tlkm.broadcast5g.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -13,7 +15,8 @@ public class UploadHistory {
     @Column
     private String fileName;
 
-    @Column
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate;
 
     @Column

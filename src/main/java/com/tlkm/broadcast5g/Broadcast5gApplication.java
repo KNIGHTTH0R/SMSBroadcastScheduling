@@ -22,8 +22,8 @@ public class Broadcast5gApplication {
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(2);
-		executor.setMaxPoolSize(2);
+		executor.setCorePoolSize(1);
+		executor.setMaxPoolSize(1);
 		executor.setQueueCapacity(500);
 		executor.initialize();
 		return executor;

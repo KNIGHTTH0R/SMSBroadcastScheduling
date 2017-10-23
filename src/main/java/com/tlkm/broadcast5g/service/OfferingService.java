@@ -1,7 +1,8 @@
 package com.tlkm.broadcast5g.service;
 
+import com.tlkm.broadcast5g.model.CSV;
+import com.tlkm.broadcast5g.service.dao.CSVDao;
 import com.tlkm.broadcast5g.service.dao.SMSDao;
-import com.tlkm.broadcast5g.service.logic.SenderService;
 import com.tlkm.broadcast5g.service.logic.SyncSample;
 import com.tlkm.broadcast5g.service.threads.OfferingThreadsService;
 import org.slf4j.Logger;
@@ -15,9 +16,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class OfferingService {
@@ -32,9 +34,6 @@ public class OfferingService {
     private String directoryLog;
 
     @Autowired
-    private SenderService smsSenderService;
-
-    @Autowired
     private SMSDao SMSDao;
 
     @Autowired
@@ -42,6 +41,12 @@ public class OfferingService {
 
     @Autowired
     private OfferingThreadsService offeringThreadsService;
+
+    @Autowired
+    private ImportCSVService importCSVService;
+
+    @Autowired
+    private CSVDao csvDao;
 
     private Logger logger = LoggerFactory.getLogger(OfferingService.class);
 
@@ -52,10 +57,11 @@ public class OfferingService {
         Set<String> files = getFilesList();
 
        // BufferedReader bufferedReader = null;
+          for(String file : files){
 
-        for(String file : files){
+            logger.debug("File "+file);
             BufferedReader bufferedReader = loadFile(file);
-            if(csvProcess(bufferedReader)){
+            if(csvProcess(bufferedReader, file)){
 
                 moveFile(file);
 
@@ -63,8 +69,51 @@ public class OfferingService {
             }
         }
 
+        logger.debug("FINISHED PROCESS");
+
     }
 
+
+    public void processLoad2(){
+
+        logger.debug("Process load csv");
+
+        Set<String> files = getFilesList();
+
+        for(String file : files){
+
+            logger.debug("File "+file);
+            BufferedReader bufferedReader = loadFile(file);
+          //  if(csvProcess(bufferedReader, file)){
+            Set<CSV> csvs = saveDataToCSV(bufferedReader,file);
+
+            try {
+                bufferedReader.close();
+            }catch (Exception ex){
+                logger.error("ex "+ex.toString());
+            }
+
+            moveFile(file);
+
+       //     Set<CSV> dataToBeSent = csvDao.getSMSData();
+            sendSMSProcess(csvs);
+
+
+        }
+
+        logger.debug("FINISHED PROCESS");
+
+    }
+
+
+    private Set<CSV> saveDataToCSV(BufferedReader bufferedReader,String fileName){
+
+        Set<CSV> csvs = importCSVService.mapToCSVs(bufferedReader,fileName);
+        csvDao.bulkSaveCSVs(csvs);
+
+        return csvs;
+
+    }
 
     private BufferedReader loadFile(String fileName){
 
@@ -80,37 +129,69 @@ public class OfferingService {
     }
 
 
-
-    private boolean csvProcess(BufferedReader bufferedReader){
+    private boolean csvProcess(BufferedReader bufferedReader,String fileName){
 
         String line;
-        String split = ",";
+        String splitTag = ",";
         boolean isOpened = false;
 
         String msisdn = "";
+        String[] data = null;
 
+        int idx = 0;
+        int idxPhone = 3;
 
         msisdns = new HashSet<>();
 
-        Set<CompletableFuture<String>> completableFutures = new HashSet<>();
+     //   Set<CompletableFuture<String>> completableFutures = new HashSet<>();
 
-
+      //  CompletableFuture<String> completableFuture;
+        Collection<Future<String>> resultsAsync = new ArrayList<>();
         try{
 
             while((line = bufferedReader.readLine())!=null){
+                data = line.split(splitTag);
 
-                logger.debug("line : "+line);
 
-                msisdn = line;
+                if(idx==0){
+                    logger.debug("line idx 0 : "+line);
 
-               // offeringThreadsService.smsProcess(msisdn);
-                completableFutures.add(offeringThreadsService.smsProcessFuture(msisdn));
+                    idxPhone = Arrays.asList(data).indexOf("NO_HP");
+                    idx++;
+                    continue;
+                }
+
+                logger.debug("line idx : "+idx+" "+line);
+
+
+                msisdn = data[idxPhone];
+                logger.debug("line msisdn :"+msisdn);
+
+                resultsAsync.add(offeringThreadsService.smsProcessFuture(msisdn,fileName,line));
+
+           //     offeringThreadsService.smsProcessFuture(msisdn,fileName,line);
+
+                //  completableFuture = offeringThreadsService.smsProcessFuture(msisdn,fileName,line);
+              //  completableFutures.add(completableFuture);
+                idx++;
+
+
             }
 
 
-            CompletableFuture.allOf(completableFutures.toArray(
-                    new CompletableFuture[completableFutures.size()]
-            )).join();
+         //   CompletableFuture.allOf(completableFutures.toArray(
+           //         new CompletableFuture[completableFutures.size()]
+           // )).join();
+
+
+           resultsAsync.forEach(result -> {
+                try {
+                    result.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    //handle thread error
+                    logger.error("result async error due to "+e.toString());
+                }
+            });
 
             isOpened = true;
 
@@ -122,12 +203,14 @@ public class OfferingService {
             }
 
         }catch (Exception ex){
+            logger.error("data error "+ex.toString());
             isOpened = false;
         }
 
         return isOpened;
 
     }
+
 
 
     private Set<String> getFilesList(){
@@ -184,6 +267,37 @@ public class OfferingService {
 
     }
 
+
+    private void sendSMSProcess(Set<CSV> csvs){
+
+       Collection<Future<String>> resultsAsync = new ArrayList<>();
+
+       try{
+
+
+           for (CSV csv : csvs){
+               logger.debug("try to call async for "+csv.getNoHP());
+               resultsAsync.add(offeringThreadsService.smsProcessFuture(csv));
+
+           }
+
+           resultsAsync.forEach(result -> {
+                try {
+                    result.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    //handle thread error
+                    logger.error("result async error due to "+e.toString());
+                }
+            });
+
+
+
+        }catch (Exception ex){
+            logger.error("data error "+ex.toString());
+
+        }
+
+    }
 
 
 

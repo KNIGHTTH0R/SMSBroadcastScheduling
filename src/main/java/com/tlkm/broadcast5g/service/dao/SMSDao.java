@@ -1,6 +1,9 @@
 package com.tlkm.broadcast5g.service.dao;
 
+import com.tlkm.broadcast5g.model.CSV;
+import com.tlkm.broadcast5g.model.SMS;
 import com.tlkm.broadcast5g.model.SMSOffering;
+import com.tlkm.broadcast5g.repository.database.CSVRepository;
 import com.tlkm.broadcast5g.repository.database.SMSOfferingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,17 +17,27 @@ public class SMSDao {
     @Autowired
     SMSOfferingRepository smsOfferingRepository;
 
-    public void saveSMSData(SMSOffering smsOfferingResponse){
-        smsOfferingRepository.save(smsOfferingResponse);
+    @Autowired
+    CSVRepository csvRepository;
+
+    public void saveSMSData(SMS sms){
+
+        if(sms instanceof SMSOffering){
+            smsOfferingRepository.save((SMSOffering)sms);
+        }
+        else if(sms instanceof CSV){
+            csvRepository.save((CSV)sms);
+        }
+
     }
 
     public boolean isPinExist(String pin){
 
         boolean isExist = false;
 
-        Set<SMSOffering> smsOfferingList = smsOfferingRepository.findByPin(pin);
+        Set<CSV> csvs = csvRepository.findByPin(pin);
 
-        for (SMSOffering smsOffering : smsOfferingList){
+        for (CSV csv : csvs){
             isExist = true;
         }
 

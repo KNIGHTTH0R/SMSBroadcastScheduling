@@ -10,4 +10,10 @@ import java.util.Set;
 public interface CSVRepository extends CrudRepository<CSV,Long> {
 
     Set<CSV> findByFileName(String fileName);
+
+
+    Set<CSV> findByPin(String pin);
+
+    Set<CSV> findByStatusId(int id);
+
 }

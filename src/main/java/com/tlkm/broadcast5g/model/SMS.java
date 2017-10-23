@@ -2,15 +2,26 @@ package com.tlkm.broadcast5g.model;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@MappedSuperclass
 public abstract class SMS {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Column(length = 20)
     private String msisdn;
@@ -27,7 +38,6 @@ public abstract class SMS {
     @Column
     private String responseDesc;
 
-    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date sentDate;
 
@@ -59,14 +69,19 @@ public abstract class SMS {
     @ColumnDefault("0")
     private int replyStatus;
 
+    @Column
+    private String replyContent;
+
+    @Column
+    private String replyStatusDesc;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date replyDate;
 
     @Override
     public String toString() {
-        return "SMSOffering{" +
-                "id=" + id +
+        return "SMS{" +
                 ", msisdn='" + msisdn + '\'' +
                 ", content='" + content + '\'' +
                 ", senderID='" + senderID + '\'' +
@@ -124,14 +139,6 @@ public abstract class SMS {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Date getSentDate() {
@@ -222,5 +229,19 @@ public abstract class SMS {
         this.replyDate = replyDate;
     }
 
+    public String getReplyContent() {
+        return replyContent;
+    }
 
+    public void setReplyContent(String replyContent) {
+        this.replyContent = replyContent;
+    }
+
+    public String getReplyStatusDesc() {
+        return replyStatusDesc;
+    }
+
+    public void setReplyStatusDesc(String replyStatusDesc) {
+        this.replyStatusDesc = replyStatusDesc;
+    }
 }

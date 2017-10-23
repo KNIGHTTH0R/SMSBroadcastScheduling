@@ -7,18 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReplyService {
+public class ReplyModule {
+
 
     @Autowired
-    SMSOfferingRepository smsOfferingRepository;
-
-    @Autowired
-    SMSDao SMSDao;
+    SMSDao smsDao;
 
     public String replyProcess(String apiKey,String pin){
 
         String response = "";
-        SMSOffering smsOffering = SMSDao.getSMSbyPIN(pin);
+        SMSOffering smsOffering = smsDao.getSMSbyPIN(pin);
 
 
         return "";

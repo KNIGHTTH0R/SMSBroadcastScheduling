@@ -1,6 +1,8 @@
 package com.tlkm.broadcast5g.service.logic;
 
 import com.tlkm.broadcast5g.service.dao.SMSDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,19 +10,26 @@ import java.util.Date;
 import java.util.Random;
 
 @Service
-public class PINService {
+public class PINModule {
 
     @Autowired
     SMSDao SMSDao;
+
+    private Logger logger = LoggerFactory.getLogger(PINModule.class);
 
     public String generatePIN(String msisdn){
         String pinTemp = "";
 
         System.out.println("lenght : "+msisdn.length());
 
-        pinTemp = "G" + msisdn.substring(msisdn.length() - 4, msisdn.length()-1);
+        try{
+            pinTemp = "PL" + msisdn.substring(msisdn.length() - 4, msisdn.length()-1);
 
-        pinTemp = generateFromDB(pinTemp,1);
+            pinTemp = generateFromDB(pinTemp,1);
+
+        }catch (Exception e){
+            logger.error("error generate pin "+pinTemp);
+        }
 
         return pinTemp;
     }

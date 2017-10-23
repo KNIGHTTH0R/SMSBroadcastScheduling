@@ -2,16 +2,20 @@ package com.tlkm.broadcast5g.model;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class CSV {
+public class CSV extends SMS {
 
     @Id
     @GeneratedValue(strategy =GenerationType.AUTO)
     private Long id;
+
+    @Column
+    private String ncli;
 
     @Column
     private String ndPots;
@@ -41,42 +45,16 @@ public class CSV {
     @Column
     private String fileName;
 
-
-    // SMS Response
-
     @Column
-    private String pin;
-
-    @Column
-    private int smsCount;
-
-    @Column
-    private int statusId;
-
-    @Column
-    private String statusDesc;
-
-    @Column
-    private String trxId;
-
-    @Column
-    @ColumnDefault("0")
-    private int replyStatus;
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date replyDate;
-
-    @Column
-    private String content;
-
-    @Column(length = 20)
-    private String senderID;
+    private String replyContent;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date sentDate;
+    private Date saveDate;
 
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date sentDate;
 
     public Long getId() {
         return id;
@@ -84,6 +62,14 @@ public class CSV {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNcli() {
+        return ncli;
+    }
+
+    public void setNcli(String ncli) {
+        this.ncli = ncli;
     }
 
     public String getNdPots() {
@@ -158,82 +144,30 @@ public class CSV {
         this.fileName = fileName;
     }
 
-    public String getPin() {
-        return pin;
+    @Override
+    public String getReplyContent() {
+        return replyContent;
     }
 
-    public void setPin(String pin) {
-        this.pin = pin;
+    @Override
+    public void setReplyContent(String replyContent) {
+        this.replyContent = replyContent;
     }
 
-    public int getSmsCount() {
-        return smsCount;
+    public Date getSaveDate() {
+        return saveDate;
     }
 
-    public void setSmsCount(int smsCount) {
-        this.smsCount = smsCount;
+    public void setSaveDate(Date saveDate) {
+        this.saveDate = saveDate;
     }
 
-    public int getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
-    }
-
-    public String getStatusDesc() {
-        return statusDesc;
-    }
-
-    public void setStatusDesc(String statusDesc) {
-        this.statusDesc = statusDesc;
-    }
-
-    public String getTrxId() {
-        return trxId;
-    }
-
-    public void setTrxId(String trxId) {
-        this.trxId = trxId;
-    }
-
-    public int getReplyStatus() {
-        return replyStatus;
-    }
-
-    public void setReplyStatus(int replyStatus) {
-        this.replyStatus = replyStatus;
-    }
-
-    public Date getReplyDate() {
-        return replyDate;
-    }
-
-    public void setReplyDate(Date replyDate) {
-        this.replyDate = replyDate;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getSenderID() {
-        return senderID;
-    }
-
-    public void setSenderID(String senderID) {
-        this.senderID = senderID;
-    }
-
+    @Override
     public Date getSentDate() {
         return sentDate;
     }
 
+    @Override
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
     }
