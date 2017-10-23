@@ -20,7 +20,8 @@ public class CSVGeneratorScheduler {
     @Autowired
     private ExportCSVService exportCSVService;
 
-    @Scheduled(cron = "0 0 * * * *")
+   // @Scheduled(cron = "0 0 * * * *")
+   // @Scheduled(fixedDelay = 600000)
     public void generateReportCSV() {
         log.info("Time strat cron CSV generator {}", dateFormat.format(new Date()));
 

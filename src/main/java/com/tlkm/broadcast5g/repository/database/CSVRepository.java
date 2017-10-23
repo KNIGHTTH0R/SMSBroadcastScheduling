@@ -5,15 +5,17 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
+import java.util.Date;
 
 @Repository
 public interface CSVRepository extends CrudRepository<CSV,Long> {
 
     Set<CSV> findByFileName(String fileName);
 
-
     Set<CSV> findByPin(String pin);
 
     Set<CSV> findByStatusId(int id);
+
+    Set<CSV> findByFileNameAndSentDate(String fileName,Date date);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -29,14 +30,25 @@ public class ExportCSVService {
     Logger logger = LoggerFactory.getLogger(ExportCSVService.class);
 
     public void process(){
-        Set<UploadHistory> uploadHistories = getUploadData();
+        Set<UploadHistory> uploadHistories = getByUploadData();
         Set<String> fileNames = getFileNames(uploadHistories);
 
+        logger.debug("file names : "+fileNames.toString());
         Set<CSV> csvs;
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
+        String dateString = dateFormat.format(Common.yesterday());
+        String fileNameForGen;
+
+
+
         for(String fileName : fileNames){
-            csvs = getRecentStatusUpload(fileName);
-            int result = exportData(fileName, csvs);
+            csvs = getRecentStatusUpload(fileName,Common.yesterday());
+            fileNameForGen = fileName+dateString+".csv";
+
+            logger.debug("fileName4Gen "+fileNameForGen);
+
+            int result = exportData(fileNameForGen, csvs);
             logExport(fileName, result);
         }
 
@@ -132,10 +144,17 @@ public class ExportCSVService {
         return csvs;
     }
 
+    private Set<CSV> getRecentStatusUpload(String fileName,Date date){
+        Set<CSV> csvs = csvRepository.findByFileNameAndSentDate(fileName,date);
 
-    private Set<UploadHistory> getUploadData(){
+        return csvs;
+    }
+
+
+    private Set<UploadHistory> getByUploadData(){
         Date yesterday = Common.yesterday();
 
+        logger.debug("get upload data");
         Set<UploadHistory> uploadHistories = uploadHistoryRepository.findByUploadDate(yesterday);
 
         return uploadHistories;
@@ -147,6 +166,7 @@ public class ExportCSVService {
         Set<String> files = new HashSet<>();
 
         for(UploadHistory uploadHistory : uploadHistories){
+            logger.debug("file name "+uploadHistory.getFileName());
             files.add(uploadHistory.getFileName());
         }
 

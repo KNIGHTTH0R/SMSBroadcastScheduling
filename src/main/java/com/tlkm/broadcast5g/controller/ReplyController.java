@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/t")
+@RequestMapping("/sms5g")
 public class ReplyController {
 
     @Autowired
@@ -18,8 +18,10 @@ public class ReplyController {
     @GetMapping("/reply")
     public String replySMS(
             @RequestParam(value="api-key")String apiKey,
-            @RequestParam(value="reply-content") String replySMS){
+            @RequestParam(value="reply-content") String replySMS,
+            @RequestParam(value="encrypt-no")String encryptNo,
+            @RequestParam(value = "opt-id")String optId){
 
-        return replyModule.replyProcess(apiKey,replySMS);
+        return replyModule.replyProcess(apiKey,replySMS,encryptNo,optId);
     }
 }

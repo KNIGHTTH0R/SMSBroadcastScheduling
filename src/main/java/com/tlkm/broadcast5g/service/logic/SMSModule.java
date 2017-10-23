@@ -33,8 +33,11 @@ public class SMSModule {
     @Autowired
     private GetRequester getRequester;
 
-    public static int SMS_TYPE_1 = 1;
-    public static int SMS_TYPE_3 = 3;
+    public static final int SMS_TYPE_1 = 1;
+    public static final int SMS_TYPE_3 = 3;
+    public static final int SMS_REPLY = 2;
+    public static final int SMS_FAILED_FORMAT = 4;
+    public static final int SMS_FAILED_PIN = 5;
 
     @Autowired
     private SMSModule smsModule;
@@ -52,7 +55,7 @@ public class SMSModule {
 
     private Logger logger = LoggerFactory.getLogger(SMSModule.class);
 
-    public String getOptName(String msisdn){
+    public String getOptNameOld(String msisdn){
 
         String smsPrefixSplit = "";
         String optName = "Undefined";
@@ -89,6 +92,36 @@ public class SMSModule {
 
     }
 
+    private String getOptName(String msisdn){
+        String optName = "NONTSEL";
+        String recipient = "";
+
+        if (msisdn.startsWith("62")) {
+            recipient = "0"+msisdn.substring(1);
+        }else{
+            recipient = msisdn;
+        }
+
+        if(msisdn.startsWith("8")){
+            recipient = "0"+msisdn;
+        }
+
+        if(recipient.startsWith("0811") | recipient.startsWith("0812") | recipient.startsWith("0813")){
+            optName = "TSEL";
+        }
+
+
+        if(recipient.startsWith("0821") | recipient.startsWith("0822") | recipient.startsWith("0823")){
+            optName = "TSEL";
+        }
+
+
+        if(recipient.startsWith("0851") | recipient.startsWith("0852") | recipient.startsWith("0853")){
+            optName = "TSEL";
+        }
+
+        return optName;
+    }
     public SMS sendSMS(String msisdn, String content, String senderID, int type){
         String responseReq = "";
         Map params = getParam(msisdn,content,senderID);
@@ -139,8 +172,15 @@ public class SMSModule {
     }
 
     public int smsCount(String content){
-        int count = Math.round(content.length() / 160);
-        return count;
+      //  int count = Math.round(content.length() / 160);
+      //  return count;
+
+        int sLength = content.length();
+        double chunk = 160;
+        double bagi = sLength/chunk;
+        int token = (int)Math.ceil(bagi);
+
+        return token;
     }
 
     public Map<String,String> getParam(String msisdn,String content,String senderID){
@@ -213,7 +253,7 @@ public class SMSModule {
         String content = "";
 
         if(!optName.equalsIgnoreCase("TSEL")){
-            senderID = "TELKOM147";
+            senderID = "1147";
         }
 
         String pin = "";
@@ -304,7 +344,7 @@ public class SMSModule {
         if(senderID.equalsIgnoreCase("1147")){
             content = environment.getProperty("smsOffering.content.1147");
         }else{
-            content = environment.getProperty("smsOffering.content.telkom147");;
+            content = environment.getProperty("smsOffering.content.telkom147");
         }
 
         content = content.replace("<PIN>",pin);
@@ -312,12 +352,46 @@ public class SMSModule {
         return content;
     }
 
-    private String generateContent(String senderID, int smsType){
-        String content;
 
-        content = "";
+    public String generateContent(String senderID,int smsType){
+        String content = "";
+
+        logger.debug("SMS TYPE 1");
+
+       if(smsType!=SMS_TYPE_1){
+           content = generateContent(smsType);
+       }
+
+      //  content = content.replace("<PIN>",pin);
+
         return content;
     }
+
+    public String generateContent(int smsType){
+        String content = "";
+
+        switch (smsType){
+
+            case SMS_TYPE_3 :
+                content = environment.getProperty("smsInformation.content");
+                break;
+            case SMS_REPLY :
+                content = environment.getProperty("sms.content.reply");
+                break;
+            case SMS_FAILED_FORMAT :
+                content = environment.getProperty("sms.content.falsereply");
+                break;
+            case SMS_FAILED_PIN :
+                content = environment.getProperty("sms.content.falsepin");
+                break;
+
+        }
+
+
+        return content;
+    }
+
+
 
 
 

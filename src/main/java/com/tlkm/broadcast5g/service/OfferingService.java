@@ -253,7 +253,7 @@ public class OfferingService {
         Path destPath = Paths.get(dest);
 
         try {
-            Files.move(sourcePath,destPath);
+            Files.move(sourcePath,destPath,StandardCopyOption.REPLACE_EXISTING);
 
             logger.debug("file "+source+" is moved to "+dest);
 

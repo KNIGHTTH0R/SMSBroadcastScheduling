@@ -46,17 +46,17 @@ public class SMSDao {
     }
 
 
-    public SMSOffering getSMSbyPIN(String pin){
+    public CSV getSMSbyPIN(String pin){
 
-        SMSOffering smsOffering = new SMSOffering();
+        CSV csv = new CSV();
 
-        Set<SMSOffering> smsOfferingList = smsOfferingRepository.findByPin(pin);
+        Set<CSV> csvSet = csvRepository.findByPin(pin);
 
-        for (SMSOffering smsOfferingTemp : smsOfferingList){
-            smsOffering = smsOfferingTemp;
+        for (CSV csv1 : csvSet){
+            csv = csv1;
         }
 
-        return smsOffering;
+        return csv;
 
     }
 

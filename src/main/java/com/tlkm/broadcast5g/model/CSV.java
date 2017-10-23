@@ -56,6 +56,18 @@ public class CSV extends SMS {
     @Temporal(TemporalType.TIMESTAMP)
     private Date sentDate;
 
+
+    @Column
+    private String encrtypNo;
+
+    public String getEncrtypNo() {
+        return encrtypNo;
+    }
+
+    public void setEncrtypNo(String encrtypNo) {
+        this.encrtypNo = encrtypNo;
+    }
+
     public Long getId() {
         return id;
     }
