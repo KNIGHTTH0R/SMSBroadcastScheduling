@@ -20,10 +20,10 @@ public class PINModule {
     public String generatePIN(String msisdn){
         String pinTemp = "";
 
-        System.out.println("lenght : "+msisdn.length());
+        System.out.println("length : "+msisdn.length());
 
         try{
-            pinTemp = "PL" + msisdn.substring(msisdn.length() - 4, msisdn.length()-1);
+            pinTemp = "GL" + msisdn.substring(msisdn.length() - 4, msisdn.length()-1);
 
             pinTemp = generateFromDB(pinTemp,1);
 
