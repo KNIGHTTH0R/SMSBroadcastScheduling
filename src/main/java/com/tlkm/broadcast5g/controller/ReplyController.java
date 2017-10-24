@@ -20,8 +20,9 @@ public class ReplyController {
             @RequestParam(value="api-key")String apiKey,
             @RequestParam(value="reply-content") String replySMS,
             @RequestParam(value="encrypt-no")String encryptNo,
-            @RequestParam(value = "opt-id")String optId){
+            @RequestParam(value = "opt-id")String optId,
+            @RequestParam(value="shortcode")String shortCode){
 
-        return replyModule.replyProcess(apiKey,replySMS,encryptNo,optId);
+        return replyModule.replyProcess(apiKey,replySMS,encryptNo,optId,shortCode);
     }
 }

@@ -60,6 +60,9 @@ public class CSV extends SMS {
     @Column
     private String encrtypNo;
 
+    @Column
+    private String shortCodeReply;
+
     public String getEncrtypNo() {
         return encrtypNo;
     }
@@ -182,5 +185,13 @@ public class CSV extends SMS {
     @Override
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+    }
+
+    public String getShortCodeReply() {
+        return shortCodeReply;
+    }
+
+    public void setShortCodeReply(String shortCodeReply) {
+        this.shortCodeReply = shortCodeReply;
     }
 }

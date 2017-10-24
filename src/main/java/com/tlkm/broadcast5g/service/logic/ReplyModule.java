@@ -30,19 +30,20 @@ public class ReplyModule {
     public String replyProcess(String apiKey,
                                String content,
                                String encryptNo,
-                               String optId){
+                               String optId,
+                               String shortCode){
 
-        logReplyDao.saveLog(encryptNo,content,optId);
+        logReplyDao.saveLog(encryptNo,content,optId,shortCode);
 
 
         if(!authModule.auth(apiKey)){
             return "";
         }
 
-        return getReplyContent(content, encryptNo);
+        return getReplyContent(content, encryptNo,shortCode);
     }
 
-    private String getReplyContent(String content, String encryptNo) {
+    private String getReplyContent(String content, String encryptNo,String shortCode) {
         Date date = new Date();
 
         String replyData = "";
@@ -77,6 +78,7 @@ public class ReplyModule {
                 csv.setEncrtypNo(encryptNo);
                 csv.setReplyStatus(1);
                 csv.setReplyStatusDesc("SMS REPLY SUCCESS");
+                csv.setShortCodeReply(shortCode);
 
                 replyData = smsModule.generateContent(SMSModule.SMS_REPLY);
                 smsDao.saveSMSData(csv);

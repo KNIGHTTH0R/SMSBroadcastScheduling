@@ -12,12 +12,13 @@ public class LogReplyDao {
     LogReplyRepository logReplyRepository;
 
 
-    public void saveLog(String encryptNo,String content,String optId){
+    public void saveLog(String encryptNo,String content,String optId,String shortCode){
 
         LogReply logReply = new LogReply();
         logReply.setEncryptNo(encryptNo);
         logReply.setContent(content);
         logReply.setOptId(optId);
+        logReply.setShortCode(shortCode);
 
         logReplyRepository.save(logReply);
     }
