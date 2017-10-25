@@ -96,7 +96,7 @@ public class OfferingService {
             moveFile(file);
 
            Set<CSV> dataToBeSent = csvDao.getSMSData();
-            sendSMSProcess(dataToBeSent);
+           sendSMSProcess(dataToBeSent);
 
 
         }
@@ -268,7 +268,7 @@ public class OfferingService {
     }
 
 
-    private void sendSMSProcess(Set<CSV> csvs){
+   private void sendSMSProcess(Set<CSV> csvs){
 
        Collection<Future<String>> resultsAsync = new ArrayList<>();
 
@@ -298,6 +298,8 @@ public class OfferingService {
         }
 
     }
+
+
 
 
 

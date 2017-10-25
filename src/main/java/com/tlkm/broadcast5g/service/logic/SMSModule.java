@@ -39,8 +39,6 @@ public class SMSModule {
     public static final int SMS_FAILED_FORMAT = 4;
     public static final int SMS_FAILED_PIN = 5;
 
-    @Autowired
-    private SMSModule smsModule;
 
     @Autowired
     private com.tlkm.broadcast5g.service.dao.SMSDao SMSDao;
@@ -148,14 +146,28 @@ public class SMSModule {
                 idxPostfix = responseLower.indexOf("</trxid>") - 1;
 
                 trxId = responseReq.substring(idxPrefix,idxPostfix);
-                sms.setStatusId(Common.SUCCESS);
-                sms.setTrxId(trxId);
-                sms.setStatusDesc("SENT");
+
+                logger.debug("TRX ID "+trxId);
+
+                if(!trxId.equalsIgnoreCase("0") && !trxId.trim().equalsIgnoreCase("")){
+                    sms.setStatusId(Common.SUCCESS);
+                    sms.setTrxId(trxId);
+                    sms.setStatusDesc("SENT");
+                  //  sms.setStatusDesc(responseReq);
+                }else{
+                    sms.setStatusId(Common.FAILED);
+                    sms.setTrxId(trxId);
+                 //   sms.setStatusDesc("SENT");
+                    sms.setStatusDesc(responseReq);
+                }
+
 
             }else{
 
                 sms.setStatusId(Common.FAILED);
                 sms.setStatusDesc(responseReq);
+
+                sms.setStatusDesc("FAILED");
             }
 
         }catch (Exception ex){
@@ -232,12 +244,12 @@ public class SMSModule {
 
         logger.debug("sms to send "+content);
 
-        sms = smsModule.sendSMS(msisdn,content,senderID, smsType);
+        sms = sendSMS(msisdn,content,senderID, smsType);
 
         sms.setOptName(optName);
         sms.setSenderID(senderID);
         sms.setContent(content);
-        sms.setSmsCount(smsModule.smsCount(content));
+        sms.setSmsCount(smsCount(content));
         sms.setPin(pin);
 
 
@@ -266,14 +278,14 @@ public class SMSModule {
 
         }
 
-        logger.debug("sms to send "+content);
+      //  logger.debug("sms to send "+content);
 
-        sms = smsModule.sendSMS(msisdn,content,senderID, smsType);
+        sms = sendSMS(msisdn,content,senderID, smsType);
 
         sms.setOptName(optName);
         sms.setSenderID(senderID);
         sms.setContent(content);
-        sms.setSmsCount(smsModule.smsCount(content));
+        sms.setSmsCount(smsCount(content));
         sms.setPin(pin);
 
         csv = new CSV();
@@ -314,12 +326,12 @@ public class SMSModule {
 
         logger.debug("sms to send "+content);
 
-        sms = smsModule.sendSMS(csv.getNoHP(),content,senderID, smsType);
+        sms = sendSMS(csv.getNoHP(),content,senderID, smsType);
 
         sms.setOptName(optName);
         sms.setSenderID(senderID);
         sms.setContent(content);
-        sms.setSmsCount(smsModule.smsCount(content));
+        sms.setSmsCount(smsCount(content));
         sms.setPin(pin);
 
         csv.setStatusId(sms.getStatusId());
@@ -339,7 +351,7 @@ public class SMSModule {
     public String generateContent(String senderID,String pin){
         String content;
 
-        logger.debug("SMS TYPE 1");
+     //   logger.debug("SMS TYPE 1");
 
         if(senderID.equalsIgnoreCase("1147")){
             content = environment.getProperty("smsOffering.content.1147");
