@@ -90,7 +90,7 @@ public class OfferingService {
             try {
                 bufferedReader.close();
             }catch (Exception ex){
-                logger.error("ex "+ex.toString());
+                logger.error("buffereex "+ex.toString());
             }
 
             moveFile(file);
