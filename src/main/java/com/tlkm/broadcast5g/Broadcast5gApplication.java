@@ -24,7 +24,7 @@ public class Broadcast5gApplication {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(1);
 		executor.setMaxPoolSize(1);
-		executor.setQueueCapacity(500);
+		executor.setQueueCapacity(5000);
 		executor.initialize();
 		return executor;
 	}
