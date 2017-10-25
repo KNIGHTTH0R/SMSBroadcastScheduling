@@ -20,7 +20,7 @@ public class SMSOfferingScheduler {
     @Autowired
     private OfferingService offeringService;
 
-    @Scheduled(fixedDelay = 600000)
+    @Scheduled(fixedDelay = 1800000)
     public void sendSMSSchedule() {
         log.info("Time start scheduler {}", dateFormat.format(new Date()));
         offeringService.processLoad2();
