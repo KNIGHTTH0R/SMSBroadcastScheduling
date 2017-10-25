@@ -16,7 +16,7 @@ public class SMSInformationScheduler {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
 
-    @Scheduled(fixedDelay = 60000)
+  //  @Scheduled(fixedDelay = 60000)
     public void smsConfirmation() {
         log.info("Time start scheduler {}", dateFormat.format(new Date()));
 
