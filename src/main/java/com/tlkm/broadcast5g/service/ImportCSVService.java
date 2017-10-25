@@ -1,6 +1,7 @@
 package com.tlkm.broadcast5g.service;
 
 import com.tlkm.broadcast5g.model.CSV;
+import com.tlkm.broadcast5g.utils.Common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,9 @@ public class ImportCSVService  {
         }
 
         try{
-            csv.setNoHP(data[3]!=null?data[3]:"");
+            String noHp = data[3]!=null?data[3]:"";
+            noHp = Common.trimMsisdn(noHp);
+            csv.setNoHP(noHp);
         }catch (IndexOutOfBoundsException ex){
             csv.setNoHP("");
         }

@@ -16,5 +16,17 @@ public class Common {
         return cal.getTime();
     }
 
+    public static String trimMsisdn(String msisdn) {
+        String result = msisdn;
+        result = result.replaceAll("[^0-9]", "");
+
+        if (result.startsWith("0")) {
+            result = "62" + result.substring(1);
+        }
+        if (result.startsWith("8")) {
+            result = "62" + result.substring(0);
+        }
+        return result;
+    }
 
 }

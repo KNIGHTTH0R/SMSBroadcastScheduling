@@ -202,24 +202,13 @@ public class SMSModule {
         params.put("user",username);
         params.put("pwd",password);
         params.put("sender",senderID);
-        params.put("msisdn",trimMsisdn(msisdn));
+        params.put("msisdn", Common.trimMsisdn(msisdn));
         params.put("message", content);
 
         return params;
     }
 
-    private String trimMsisdn(String msisdn) {
-        String result = msisdn;
-        result = result.replaceAll("[^0-9]", "");
 
-        if (result.startsWith("0")) {
-            result = "62" + result.substring(1);
-        }
-        if (result.startsWith("8")) {
-            result = "62" + result.substring(0);
-        }
-        return result;
-    }
 
     public SMS processSMS(String msisdn, int smsType){
 
