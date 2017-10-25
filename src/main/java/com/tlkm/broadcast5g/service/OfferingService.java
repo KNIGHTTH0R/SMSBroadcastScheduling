@@ -96,7 +96,7 @@ public class OfferingService {
             moveFile(file);
 
            Set<CSV> dataToBeSent = csvDao.getSMSData();
-            sendSMSProcess(csvs);
+            sendSMSProcess(dataToBeSent);
 
 
         }
